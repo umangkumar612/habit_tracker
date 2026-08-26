@@ -83,6 +83,399 @@ This makes streak calculations predictable, timezone-aware, and reliable.
 
 Every user has an IANA timezone such as:
 
+HabitFlow uses the user's timezone as the source of truth for:
+
+Today's date
+Check-ins
+Streaks
+Backfilled dates
+History
+Activity analytics
+🔥 Smart Streaks
+
+HabitFlow calculates streaks on the server.
+
+Each habit provides:
+
+Current Streak
+Longest Streak
+
+A streak can end on:
+
+today, if today is completed
+yesterday, if today has not been completed yet
+
+The frontend never determines whether a streak is alive.
+
+✅ Daily Check-ins
+
+Users can check in a habit for the current local day with one click.
+
+Once completed:
+
+✓ Completed today
+
+Only one check-in is allowed for a habit on a particular local date.
+
+⏪ Backfill Support
+
+Forgot to record yesterday's habit?
+
+HabitFlow allows users to backfill previous local dates.
+
+Backfilled dates are validated against:
+
+user's local timezone
+today's local date
+habit creation date
+existing check-ins
+📅 Habit History
+
+Each habit has a detailed history showing:
+
+Current streak
+Longest streak
+Total check-ins
+Completed dates
+Calendar activity
+Historical progress
+📊 Analytics
+
+HabitFlow provides a high-level view of progress including:
+
+Total habits
+Active habits
+Total check-ins
+Today's progress
+Consistency
+Best streak
+Habit performance
+Activity over time
+🗓️ Activity Visualization
+
+Track consistency through a calendar/heatmap-style activity visualization.
+
+The activity is based on actual local check-in dates rather than UTC timestamps.
+
+This makes long-term patterns easy to understand at a glance.
+
+🏆 Achievements
+
+HabitFlow can recognize meaningful milestones such as:
+
+First Step
+Building Momentum
+One Week Strong
+Two Weeks Strong
+Consistency
+Dedicated
+
+Achievements are based on actual user activity rather than fake or static data.
+
+💡 Daily Insights
+
+HabitFlow can surface small data-driven insights such as:
+
+You're one day away from a 7-day reading streak.
+
+or:
+
+4 of 6 habits are complete today.
+
+The goal is to turn raw activity into useful feedback without overwhelming the user.
+
+🧠 The Interesting Part — Local-Day Streak Logic
+
+This is the core technical challenge of HabitFlow.
+
+Consider a user in:
+
+Asia/Kolkata (UTC+05:30)
+Check-in A
+UTC:
+2026-03-10T14:30Z
+
+Local:
+2026-03-10 20:00
+Check-in B
+UTC:
+2026-03-11T10:30Z
+
+Local:
+2026-03-11 16:00
+
+These check-ins are only 20 hours apart.
+
+But they belong to:
+
+March 10
+March 11
+
+Therefore:
+
+Streak = 2
+
+Now consider:
+
+Check-in C
+UTC:
+2026-03-11T21:30Z
+
+Local:
+2026-03-12 03:00
+
+This is only 11 hours after the previous check-in.
+
+But it belongs to a new local day:
+
+March 12
+
+Therefore:
+
+Streak = 3
+
+If another check-in occurs later on March 12:
+
+UTC:
+2026-03-12T17:30Z
+
+Local:
+2026-03-12 23:00
+
+it belongs to the same local day and is rejected as a duplicate.
+
+This is why HabitFlow stores:
+
+checked_in_at_utc
+local_date
+
+instead of relying only on timestamps.
+
+🏗️ Architecture
+                     ┌─────────────────────┐
+                     │      HabitFlow      │
+                     │      Frontend       │
+                     │      Vue.js         │
+                     └──────────┬──────────┘
+                                │
+                                │ REST API
+                                ▼
+                     ┌─────────────────────┐
+                     │       Express       │
+                     │       Backend       │
+                     └──────────┬──────────┘
+                                │
+             ┌──────────────────┼──────────────────┐
+             │                  │                  │
+             ▼                  ▼                  ▼
+       Authentication      Habit Services     Streak Engine
+             │                  │                  │
+             └──────────────────┼──────────────────┘
+                                │
+                                ▼
+                         ┌──────────────┐
+                         │    MySQL     │
+                         └──────────────┘
+🛠️ Tech Stack
+Frontend
+Vue.js
+JavaScript
+HTML
+CSS
+Vite
+Axios
+Vue Router
+Backend
+Node.js
+Express.js
+JWT
+Luxon
+MySQL
+Database
+MySQL
+Foreign keys
+Unique constraints
+Local-date based check-in storage
+Testing
+Jest
+📁 Project Structure
+habit_tracker/
+│
+├── client/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── services/
+│   │   ├── router/
+│   │   ├── App.vue
+│   │   ├── main.js
+│   │   ├── style.css
+│   │   └── sidebar.css
+│   │
+│   └── package.json
+│
+├── server/
+│   ├── config/
+│   ├── controllers/
+│   ├── middleware/
+│   ├── routes/
+│   ├── services/
+│   ├── tests/
+│   ├── utils/
+│   └── server.js
+│
+├── database/
+│   └── schema.sql
+│
+├── .gitignore
+├── package.json
+└── README.md
+🔌 API Overview
+Authentication
+POST /api/auth/register
+POST /api/auth/login
+GET  /api/auth/me
+Habits
+GET    /api/habits
+POST   /api/habits
+GET    /api/habits/:id
+PUT    /api/habits/:id
+DELETE /api/habits/:id
+Check-ins
+POST /api/habits/:habitId/check-ins
+GET  /api/habits/:habitId/check-ins
+Analytics
+GET /api/analytics
+GET /api/analytics/activity
+🔒 Data Integrity
+
+HabitFlow protects the local-day rule at multiple levels.
+
+Application level
+
+The backend validates:
+
+Future dates
+Dates before habit creation
+Duplicate local dates
+Habit ownership
+User ownership
+Database level
+
+A unique constraint prevents duplicate check-ins:
+
+UNIQUE(habit_id, local_date)
+
+This means even concurrent requests cannot create two check-ins for the same habit and local day.
+
+🧪 Testing
+
+Run backend tests:
+
+cd server
+npm test
+
+The test suite covers areas such as:
+
+Timezone validation
+Local date conversion
+DST behavior
+Streak calculation
+Duplicate check-ins
+Backfilled dates
+Current streak
+Longest streak
+Analytics
+⚙️ Local Development
+1. Clone
+git clone https://github.com/umangkumar612/habit_tracker.git
+cd habit_tracker
+2. Install dependencies
+
+Backend:
+
+cd server
+npm install
+
+Frontend:
+
+cd ../client
+npm install
+🔑 Environment Variables
+
+Create a .env file according to the environment configuration.
+
+Example:
+
+PORT=5000
+
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=habit_tracker
+DB_USER=your_database_user
+DB_PASSWORD=your_database_password
+
+JWT_SECRET=your_jwt_secret
+JWT_EXPIRES_IN=7d
+
+CLIENT_URL=http://localhost:5173
+
+Never commit .env files or production credentials to GitHub.
+
+▶️ Run the Application
+
+Start backend:
+
+cd server
+npm start
+
+Start frontend:
+
+cd client
+npm run dev
+
+Frontend:
+
+http://localhost:5173
+
+Backend:
+
+http://localhost:5000
+🎯 Design Philosophy
+
+HabitFlow is intentionally designed around three ideas:
+
+01 — Consistency over perfection
+
+Missing a day shouldn't make the entire experience feel punishing.
+
+02 — Data should reflect reality
+
+A day belongs to the user's timezone, not the server's timezone.
+
+03 — Progress should feel visible
+
+Streaks, history, analytics, and activity visualization turn small daily actions into visible progress.
+
+🚧 Future Improvements
+
+Potential future enhancements:
+
+Push/email reminders
+Progressive Web App support
+Offline check-ins with synchronization
+More advanced habit analytics
+Weekly/monthly reports
+Habit categories
+Custom habit frequencies
+Social accountability
+Cloud deployment
+CI/CD pipeline
+👨‍💻 Developer
+
+Built by Umang Kumar
+
+Computer Science & Engineering
+
 ```text
 Asia/Kolkata
 America/New_York
