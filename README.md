@@ -1,85 +1,84 @@
 # HabitFlow
 
-HabitFlow is a Vue and Express habit tracker built around one reliable rule: **streaks are based on local calendar dates, not elapsed hours.** It includes habit CRUD, local-day check-ins, backfill, history, analytics, activity heatmaps, dynamic achievements, and server-generated insights.
+### Build better habits. One local day at a time. 🔥
 
-## Setup
+HabitFlow is a modern, timezone-aware habit tracking application designed to help users build consistent habits through daily check-ins, streak tracking, history, analytics, and progress visualization.
 
-1. Create the MySQL database using `database/schema.sql`.
-2. Configure the root `.env` with the server values:
+The core idea behind HabitFlow is simple:
 
-```env
-PORT=5000
-DB_HOST=localhost
-DB_PORT=3306
-DB_NAME=habit_tracker
-DB_USER=habit_app
-DB_PASSWORD=
-JWT_SECRET=replace-with-a-long-secret
-JWT_EXPIRES_IN=7d
-CLIENT_URL=http://localhost:5173
-```
+> **A streak belongs to a user's local calendar days — not elapsed hours.**
 
-3. Start the API:
+That means a habit remains consistent according to the user's own timezone, even when check-ins are made across different UTC times.
 
-```bash
-cd server
-npm install
-npm start
-```
+---
 
-4. Start the Vue client in another terminal:
+## ✨ Live Experience
 
-```bash
-cd client
-npm install
-npm run dev
-```
+🚀 **Live Demo:** [View HabitFlow](YOUR_LIVE_DEMO_URL)
 
-The client uses `VITE_API_URL` when provided and otherwise connects to `http://localhost:5000/api`.
+📦 **Repository:** [View Source Code](https://github.com/umangkumar612/habit_tracker)
 
-## API
+---
 
-- `POST /api/auth/register`
-- `POST /api/auth/login`
-- `GET /api/auth/me`
-- `POST /api/auth/logout`
-- `GET|POST /api/habits`
-- `GET|PUT|DELETE /api/habits/:id`
-- `POST /api/habits/:habitId/check-ins`
-- `GET /api/habits/:habitId/check-ins`
-- `GET /api/analytics`
-- `GET /api/analytics/activity?days=90`
-- `GET /api/achievements`
-- `GET /api/insights`
+## 📸 Preview
 
-Habit and check-in endpoints require `Authorization: Bearer <token>`.
+### Dashboard
 
-## Date and Streak Model
+![HabitFlow Dashboard](screenshots/dashboard.png)
 
-Users store an IANA timezone such as `Asia/Kolkata`, `America/New_York`, `Europe/London`, `Australia/Sydney`, or `UTC`. Offsets and abbreviations such as `+05:30` and `IST` are rejected.
+### Habits
 
-A check-in stores both the actual UTC instant in `checked_in_at_utc` and the user-local calendar date in `local_date`. The unique database constraint on `(habit_id, local_date)` permits only one check-in per habit per local day. Future dates and dates before `created_local_date` are rejected. Omitting the check-in date means today in the authenticated user's timezone.
+![HabitFlow Habits](screenshots/habits.png)
 
-Current and longest streaks are calculated by the server from `YYYY-MM-DD` dates. DST and 23:59/midnight boundaries do not change the calendar-day model. Backfilling recalculates both streak values rather than incrementing them.
+### Analytics
 
-Analytics aggregates only the authenticated user's habits and check-ins. Activity data is returned as local calendar dates for the requested range. Achievements and daily insights are calculated dynamically from the same existing data; no achievements or analytics tables are required. The frontend only displays these server responses and never calculates streak state.
+![HabitFlow Analytics](screenshots/analytics.png)
 
-When a timezone changes, historical `local_date` values remain immutable. New habits and check-ins use the new timezone; existing check-ins are never silently moved.
+### History
 
-## Testing
+![HabitFlow History](screenshots/history.png)
 
-Run backend tests with:
+> Replace the screenshot paths above with your actual screenshots.
 
-```bash
-cd server
-npm test
-```
+---
 
-Build the frontend with:
+# 🌟 Why HabitFlow?
 
-```bash
-cd client
-npm run build
-```
+Most habit trackers treat a streak as a simple difference between timestamps.
 
-Database credentials and `JWT_SECRET` must remain in the server environment and must never be exposed through client code or `VITE_` variables.
+HabitFlow takes a different approach.
+
+A user's day depends on their timezone.
+
+For example, two check-ins can be only a few hours apart in UTC but belong to two different local calendar days.
+
+HabitFlow therefore stores both:
+
+- the exact check-in instant in UTC
+- the local calendar date the check-in belongs to
+
+This makes streak calculations predictable, timezone-aware, and reliable.
+
+---
+
+# 🚀 Features
+
+## 🔐 Authentication
+
+- User registration
+- Secure login
+- JWT-based authentication
+- Protected API routes
+- Persistent user sessions
+- User-specific data isolation
+
+---
+
+## 🌍 Timezone-Aware Habits
+
+Every user has an IANA timezone such as:
+
+```text
+Asia/Kolkata
+America/New_York
+Europe/London
