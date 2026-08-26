@@ -14,11 +14,10 @@ That means a habit remains consistent according to the user's own timezone, even
 
 ## ✨ Live Experience
 
-🚀 **Live Demo:** [View HabitFlow](YOUR_LIVE_DEMO_URL)
-
 📦 **Repository:** [View Source Code](https://github.com/umangkumar612/habit_tracker)
 
 ---
+<img width="951" height="512" alt="{DA8E5BB6-E54F-46FD-A51F-4D37880EB9CF}" src="https://github.com/user-attachments/assets/098e5c60-2476-4052-8486-25f19da846e2" />
 
 ## 📸 Preview
 
