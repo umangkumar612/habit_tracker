@@ -17,9 +17,13 @@ That means a habit remains consistent according to the user's own timezone, even
 📦 **Repository:** [View Source Code](https://github.com/umangkumar612/habit_tracker)
 
 ---
-<img width="951" height="512" alt="{DA8E5BB6-E54F-46FD-A51F-4D37880EB9CF}" src="https://github.com/user-attachments/assets/098e5c60-2476-4052-8486-25f19da846e2" />
-
 ## 📸 Preview
+
+### Login/Register
+<img width="951" height="512" alt="{DA8E5BB6-E54F-46FD-A51F-4D37880EB9CF}" src="https://github.com/user-attachments/assets/098e5c60-2476-4052-8486-25f19da846e2" />
+<img width="960" height="511" alt="{348E637F-00C4-4ABA-9ABF-5444413AA48A}" src="https://github.com/user-attachments/assets/982fc02e-075d-4ea6-8f20-33e6c9e608ec" />
+
+
 
 ### Dashboard
 <img width="958" height="502" alt="{3E578109-7C80-43B8-9A5E-876874148833}" src="https://github.com/user-attachments/assets/3103ad9c-659b-4099-ba05-b35a46225b69" />
