@@ -6,7 +6,7 @@ HabitFlow is a modern, timezone-aware habit tracking application designed to hel
 
 The core idea behind HabitFlow is simple:
 
-> **A streak belongs to a user's local calendar days — not elapsed hours.**
+> **A streak belongs to a user's local calendar days — not elapsed hours.
 
 That means a habit remains consistent according to the user's own timezone, even when check-ins are made across different UTC times.
 
